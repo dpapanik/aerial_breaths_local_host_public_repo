@@ -1,78 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breathe</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: black;
-            color: white;
-            font-family: sans-serif;
-            font-size: 4rem;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none; /* Prevents accidental text selection */
-            touch-action: manipulation; /* Improves touch responsiveness */
-        }
-    </style>
+  <title>ESP32 Control</title>
 </head>
 <body>
-    BURST
-    <script>
-        // Ensure WebSocket connection is attempted
-        let socket;
-        try {
-            socket = new WebSocket("ws://XXX.XXX.X.XXX:8080:8080");    // Replace with your server's IP address
-                
-            socket.onopen = () => console.log("Connected to WebSocket Server");
-            socket.onerror = (error) => console.error("WebSocket Error:", error);
-            socket.onmessage = (event) => console.log("Server:", event.data);
-        } catch (e) {
-            console.error("WebSocket Connection Failed:", e);
-        }
+  <button onclick="toggleLED()">TURN ON LED</button>
+  <script>
+    // Connect to the WebSocket server
+    const socket = new WebSocket("ws://XXX.XXX.X.XXX:8080");    // Replace with your server's IP address
 
-        function sendCommand() {
-            if (socket && socket.readyState === WebSocket.OPEN) {
-                let command = JSON.stringify({ "command": "turn_on" });
-                console.log("Sending command:", command, "at", new Date().toISOString());
-                socket.send(command);
-            } else {
-                console.warn("WebSocket not connected, command not sent.");
-            }
-        }
+    // Handle connection events
+    socket.addEventListener('open', (event) => {
+      console.log('Connected to WebSocket server!');
+    });
 
-        function toggleWhite() {
-            document.body.style.backgroundColor = 'white';
-            document.body.style.color = 'black';
-            sendCommand();
-        }
+    socket.addEventListener('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
 
-        function toggleBlack() {
-            document.body.style.backgroundColor = 'black';
-            document.body.style.color = 'white';
-        }
-
-        // Attach event listeners for both desktop and mobile interactions
-        document.body.addEventListener("mousedown", toggleWhite);
-        document.body.addEventListener("mouseup", toggleBlack);
-        document.body.addEventListener("touchstart", (event) => {
-            event.preventDefault(); // Prevents double triggering
-            toggleWhite();
-        }, { passive: false });
-        document.body.addEventListener("touchend", toggleBlack, { passive: false });
-
-        console.log("Event Listeners Attached");
-
-    </script>
+    // Function to send "turn_on" command to ESP32 via the server
+    function toggleLED() {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send('turn_on');
+      } else {
+        console.error('WebSocket not connected!');
+      }
+    }
+  </script>
 </body>
 </html>
