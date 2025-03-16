@@ -6,23 +6,14 @@
 <body>
   <button onclick="toggleLED()">TURN ON LED</button>
   <script>
-    // Connect to the WebSocket server
-    // const socket = new WebSocket('wss://aerial-breaths.fly.dev'); 
     const socket = new WebSocket('wss://aerial-breaths-quiet-thunder-2831.fly.dev'); 
 
-    // Handle connection events
-    socket.addEventListener('open', (event) => {
-      console.log('Connected to WebSocket server!');
-    });
+    socket.addEventListener('open', () => console.log('Connected to WebSocket server!'));
+    socket.addEventListener('error', (error) => console.error('WebSocket error:', error));
 
-    socket.addEventListener('error', (error) => {
-      console.error('WebSocket error:', error);
-    });
-
-    // Function to send "turn_on" command to ESP32 via the server
     function toggleLED() {
       if (socket.readyState === WebSocket.OPEN) {
-        socket.send('turn_on');
+        socket.send(JSON.stringify({ command: "turn_on" }));  // Send JSON message
       } else {
         console.error('WebSocket not connected!');
       }

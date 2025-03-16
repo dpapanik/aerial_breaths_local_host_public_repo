@@ -20,7 +20,7 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (message) => {
         console.log("Received message from client:", message.toString());
-
+    
         let data;
         try {
             data = JSON.parse(message);
@@ -28,32 +28,35 @@ wss.on('connection', (ws) => {
             console.error("Invalid JSON received:", message);
             return;
         }
-
+    
+        // ✅ If ESP32 is sending an ID, register it properly
         if (data.id) {
-            clients.set(data.id, ws);
-            console.log(`Registered ESP32 with ID: ${data.id}`);
-            console.log(`Connected ESP32 Clients: ${[...clients.keys()].join(', ')}`);
-
-            // Send a test message to the ESP32
-            setTimeout(() => {
-                if (ws.readyState === WebSocket.OPEN) {
-                    console.log(`📨 Sending test message to ESP32 (${data.id})`);
-                    ws.send(JSON.stringify({ command: "turn_on" }));
-                }
-            }, 3000);
-
+            clients.set(data.id, ws);  // 🔥 Make sure ESP32 gets stored!
+            console.log(`✅ Registered ESP32 with ID: ${data.id}`);
+            console.log(`Currently connected ESP32 clients: ${[...clients.keys()].join(', ')}`);
             return;
         }
-
-        // Forward browser commands to ESP32 clients
-        console.log(`📤 Forwarding message to ${clients.size} ESP32 clients...`);
+    
+        // ✅ Debugging: Log all ESP32 clients before forwarding
+        console.log(`📋 Connected ESP32 Clients: ${[...clients.keys()].join(', ')}`);
+    
+        if (clients.size === 0) {
+            console.error("🚨 No ESP32 clients connected! Cannot forward message.");
+            return;
+        }
+    
+        // ✅ Forward message to ESP32
         clients.forEach((client, key) => {
             if (client.readyState === WebSocket.OPEN) {
-                console.log(`📨 Sending to ESP32 (${key}):`, message);
-                client.send(message);
+                console.log(`📨 Sending to ESP32 (${key}):`, data);
+                client.send(JSON.stringify(data));
+            } else {
+                console.error(`⚠️ ESP32 (${key}) is not open! Removing from list.`);
+                clients.delete(key);
             }
         });
     });
+    
 
     ws.on('close', () => {
         clients.forEach((value, key) => {

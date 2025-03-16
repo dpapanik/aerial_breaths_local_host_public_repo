@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for aerial-breaths-quiet-thunder-2831 on 2025-03-14T19:51:28+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'aerial-breaths-quiet-thunder-2831'
+
+primary_region = 'fra'
+
+[http_service]
+  internal_port = 8080
+  force_https = false  # Allow WebSockets over ws://
+  auto_start_machines = true
+  auto_stop_machines = false
+  min_machines_running = 1
+
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

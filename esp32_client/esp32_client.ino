@@ -1,13 +1,14 @@
 #include <WiFi.h>
 #include <ArduinoWebsockets.h>
 
-// ESP32 WROOM DA
+// ESP32 WROOM DA Module
 
 // WiFi credentials
 const char* ssid = "your ssid";
 const char* password = "your password";
 
-// const char* websocketServer = "wss://aerial-breaths.fly.dev"; 
+
+// const char* websocketServer = "wss://aerial-breaths.fly.dev"; // Fly IO
 const char* websocketServer = "wss://aerial-breaths-quiet-thunder-2831.fly.dev"; 
 
 // Delay time for fan operation in milliseconds
@@ -47,6 +48,7 @@ void setup() {
     // Send registration message to the WebSocket server
     webSocket.send(String("{\"id\": \"") + DEVICE_ID + "\"}");
     
+}
 
 void loop() {
     webSocket.poll();  // Maintain WebSocket connection
@@ -75,4 +77,5 @@ void onWebSocketEvent(WebsocketsEvent event, String data) {
         Serial.println("WebSocket Disconnected!");
     }
 }
+
 
