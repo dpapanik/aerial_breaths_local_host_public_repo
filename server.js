@@ -10,29 +10,29 @@ const PORT = process.env.PORT || 8080;
 app.use(express.static(__dirname));
 
 server.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
 
 const clients = new Map();
 
 wss.on('connection', (ws) => {
-    console.log("🔹 New WebSocket client connected");
+    console.log("New WebSocket client connected");
 
     ws.on('message', (message) => {
-        console.log("📩 Received message from client:", message.toString());
+        console.log("Received message from client:", message.toString());
 
         let data;
         try {
             data = JSON.parse(message);
         } catch (e) {
-            console.error("❌ Invalid JSON received:", message);
+            console.error("Invalid JSON received:", message);
             return;
         }
 
         if (data.id) {
             clients.set(data.id, ws);
-            console.log(`✅ Registered ESP32 with ID: ${data.id}`);
-            console.log(`🔎 Connected ESP32 Clients: ${[...clients.keys()].join(', ')}`);
+            console.log(`Registered ESP32 with ID: ${data.id}`);
+            console.log(`Connected ESP32 Clients: ${[...clients.keys()].join(', ')}`);
 
             // Send a test message to the ESP32
             setTimeout(() => {

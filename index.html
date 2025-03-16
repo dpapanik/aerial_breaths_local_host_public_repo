@@ -7,7 +7,8 @@
   <button onclick="toggleLED()">TURN ON LED</button>
   <script>
     // Connect to the WebSocket server
-    const socket = new WebSocket("ws://XXX.XXX.X.XXX:8080");    // Replace with your server's IP address
+    // const socket = new WebSocket('wss://aerial-breaths.fly.dev'); 
+    const socket = new WebSocket('wss://aerial-breaths-quiet-thunder-2831.fly.dev'); 
 
     // Handle connection events
     socket.addEventListener('open', (event) => {

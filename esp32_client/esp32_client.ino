@@ -7,7 +7,8 @@
 const char* ssid = "your ssid";
 const char* password = "your password";
 
-const char* websocketServer = "ws://XXX.XXX.X.XXX:8080"; // your server IP address
+// const char* websocketServer = "wss://aerial-breaths.fly.dev"; 
+const char* websocketServer = "wss://aerial-breaths-quiet-thunder-2831.fly.dev"; 
 
 // Delay time for fan operation in milliseconds
 const int fan_delay = 500;
